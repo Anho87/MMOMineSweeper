@@ -1,0 +1,30 @@
+/* CSS för spelbrädet */
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(10, 40px); /* 10 kolumner */
+    grid-template-rows: repeat(10, 40px); /* 10 rader */
+    gap: 2px; /* Avstånd mellan rutorna */
+}
+
+.cell {
+    width: 40px;
+    height: 40px;
+    background-color: #d3d3d3;
+    border: 1px solid #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.cell.revealed {
+    background-color: #fff; /* Avslöjade celler blir vita */
+    cursor: default; /* Inaktivera pekaren */
+}
+
+.cell.mine {
+    background-color: red; /* Mina celler blir röda */
+    color: white; /* Vit text på minan */
+}
+
