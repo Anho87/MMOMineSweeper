@@ -16,7 +16,7 @@ public class GameService {
     private boolean[][] mines; 
     private boolean[][] revealed; 
     private List<Mine> mineList; 
-    private final int numberOfMines = 10;
+    private final int numberOfMines = 20;
 
     public void initializeGame() {
         mines = new boolean[boardSize][boardSize];
