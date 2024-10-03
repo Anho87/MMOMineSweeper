@@ -6,11 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Mine {
-    // Getters
-    private final int x; // X-koordinat för minan
-    private final int y; // Y-koordinat för minan
-
-    // Konstruktor
+    private final int x; 
+    private final int y; 
+    
     public Mine(int x, int y) {
         this.x = x;
         this.y = y;

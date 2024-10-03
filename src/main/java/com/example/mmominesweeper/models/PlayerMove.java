@@ -1,12 +1,14 @@
 package com.example.mmominesweeper.models;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class PlayerMove {
-    // Getter och Setter
-    private int x; // Kolumnindex
-    private int y; // Radindex
+
+    private int x;
+    private int y; 
     
 }
 

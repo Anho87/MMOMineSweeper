@@ -1,9 +1,9 @@
-/* CSS för spelbrädet */
+
 #game-board {
     display: grid;
-    grid-template-columns: repeat(10, 40px); /* 10 kolumner */
-    grid-template-rows: repeat(10, 40px); /* 10 rader */
-    gap: 2px; /* Avstånd mellan rutorna */
+    grid-template-columns: repeat(10, 40px); 
+    grid-template-rows: repeat(10, 40px); 
+    gap: 2px; 
 }
 
 .cell {
@@ -19,12 +19,12 @@
 }
 
 .cell.revealed {
-    background-color: #fff; /* Avslöjade celler blir vita */
-    cursor: default; /* Inaktivera pekaren */
+    background-color: #fff;
+    cursor: default;
 }
 
 .cell.mine {
-    background-color: red; /* Mina celler blir röda */
-    color: white; /* Vit text på minan */
+    background-color: red; 
+    color: white; 
 }
 

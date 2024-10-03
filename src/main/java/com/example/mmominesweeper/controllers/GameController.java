@@ -22,13 +22,14 @@ public class GameController {
     public GameController(SimpMessagingTemplate messagingTemplate, GameService gameService) {
         this.messagingTemplate = messagingTemplate;
         this.gameService = gameService;
-        this.gameService.initializeGame(); // Initiera spelet här
+        this.gameService.initializeGame(); 
     }
 
     @PostMapping("/reset")
-    public void resetGame() {
+    public String resetGame() {
         gameService.resetGame();
-        messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(-1, false, 0, false));
+        messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(-1, false, 0, false, true));
+        return "index";
     }
 
     @MessageMapping("/move")
@@ -37,25 +38,19 @@ public class GameController {
         int y = move.getY();
         int cellIndex = x + (y * gameService.getBoardSize());
 
-        System.out.println("Player moved: (" + x + ", " + y + ") Cell index: " + cellIndex); // Logga spelarens drag
-
-        // Kontrollera om spelaren klickade på en mina
+        System.out.println("Player moved: (" + x + ", " + y + ") Cell index: " + cellIndex);
+        
         if (gameService.isMineAt(x, y)) {
             System.out.println("Mine hit at: (" + x + ", " + y + ")");
-            // Skicka uppdatering för att visa att en mina har träffats
-            messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(cellIndex, true, 0, false));
+            messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(cellIndex, true, 0, false,false));
         } else {
-            // Avslöja alla celler som ska avslöjas
+         
             List<GameUpdate> revealedCellsUpdates = gameService.revealAdjacentCells(x, y);
 
-            // Kontrollera om spelet har vunnits
             boolean isWin = gameService.checkWinCondition();
 
-            // Skapa en RevealedCellsUpdate och skicka den med alla avslöjade celler och vinststatus
             RevealedCellsUpdate revealedCellsUpdate = new RevealedCellsUpdate(revealedCellsUpdates, isWin);
             messagingTemplate.convertAndSend("/topic/game-updates", revealedCellsUpdate);
         }
     }
-
-
 }
