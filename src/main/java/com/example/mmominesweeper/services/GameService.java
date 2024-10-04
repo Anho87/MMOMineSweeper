@@ -12,13 +12,14 @@ import java.util.*;
 @Getter
 @Setter
 public class GameService {
-    private final int boardSize = 10;
+    private final int boardSize = 100;
     private boolean[][] mines; 
     private boolean[][] revealed; 
     private List<Mine> mineList; 
-    private final int numberOfMines = 20;
+    private final int numberOfMines = (int) (boardSize * Math.sqrt(boardSize * 2));
 
     public void initializeGame() {
+        System.out.println(numberOfMines);
         mines = new boolean[boardSize][boardSize];
         revealed = new boolean[boardSize][boardSize];
         mineList = new ArrayList<>();
@@ -83,32 +84,48 @@ public class GameService {
     public List<GameUpdate> revealAdjacentCells(int startX, int startY) {
         List<GameUpdate> revealedCellsUpdates = new ArrayList<>();
         Queue<int[]> queue = new LinkedList<>();
+        final int MAX_REVEAL_LIMIT = boardSize * boardSize;  // Max antal celler att avslöja
+        int revealCount = 0;
+
         queue.add(new int[]{startX, startY});
 
         while (!queue.isEmpty()) {
+            if (revealCount >= MAX_REVEAL_LIMIT) {
+                System.out.println("Max antal celler avslöjade, stoppar ytterligare avslöjande.");
+                break;
+            }
+
             int[] current = queue.poll();
             int x = current[0];
             int y = current[1];
+
+            if (revealed[x][y]) {
+                continue;  // Hoppa över celler som redan avslöjats
+            }
+
             revealCell(x, y);
+            revealCount++;  // Öka avslöjarens räknare
             int cellIndex = x + (y * boardSize);
             int adjacentMines = countAdjacentMines(x, y);
-            revealedCellsUpdates.add(new GameUpdate(cellIndex, false, adjacentMines, false,false));
-            
+            revealedCellsUpdates.add(new GameUpdate(cellIndex, false, adjacentMines, false, false));
+
             if (adjacentMines == 0) {
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dy = -1; dy <= 1; dy++) {
-                        if (dx == 0 && dy == 0) continue; 
+                        if (dx == 0 && dy == 0) continue;
                         int newX = x + dx;
                         int newY = y + dy;
                         if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize && !revealed[newX][newY]) {
-                            queue.add(new int[]{newX, newY}); 
+                            queue.add(new int[]{newX, newY});
                         }
                     }
                 }
             }
         }
-        return revealedCellsUpdates; 
+
+        return revealedCellsUpdates;
     }
+
 
     public boolean checkWinCondition() {
         for (int x = 0; x < boardSize; x++) {

@@ -1,8 +1,8 @@
 
 #game-board {
     display: grid;
-    grid-template-columns: repeat(10, 40px); 
-    grid-template-rows: repeat(10, 40px); 
+    grid-template-columns: repeat(100, 40px); 
+    grid-template-rows: repeat(100, 40px); 
     gap: 2px; 
 }
 
@@ -27,4 +27,3 @@
     background-color: red; 
     color: white; 
 }
-

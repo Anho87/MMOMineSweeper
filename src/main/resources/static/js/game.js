@@ -1,8 +1,7 @@
-const boardSize = 10;
+const boardSize = 100;
 const socket = new SockJS('/game');
 const stompClient = Stomp.over(socket);
 const gameBoard = document.getElementById("game-board");
-
 
 function handleCellClick(event) {
     const cell = event.target;
@@ -18,9 +17,8 @@ function sendMove(x, y) {
 stompClient.connect({}, function (frame) {
     console.log("Connected: " + frame);
 
-    
     stompClient.send("/app/connect", {}, {});
-    
+
     const newGameStateSubscription = stompClient.subscribe('/topic/new-game-state', function (message) {
         const result = JSON.parse(message.body);
         console.log("Received current game state:", result);
@@ -39,11 +37,21 @@ stompClient.connect({}, function (frame) {
     console.error('WebSocket connection error:', error);
 });
 
+// Ny funktion för att inaktivera spelplanen
+function disableBoard() {
+    const cells = document.querySelectorAll(".cell");
+    cells.forEach(cell => {
+        cell.removeEventListener("click", handleCellClick); // Ta bort event
+        cell.classList.add("disabled"); // Lägg till klass för inaktivering
+    });
+}
+
 function renderBoardState(currentGameState) {
     currentGameState.forEach(cellUpdate => {
         updateSingleCell(cellUpdate);
     });
 }
+
 function resetClientBoard() {
     while (gameBoard.firstChild) {
         gameBoard.removeChild(gameBoard.firstChild);
@@ -54,7 +62,7 @@ function resetClientBoard() {
 
 function updateBoard(result) {
     console.log("Updating board with result:", result);
-    
+
     if (Array.isArray(result.revealedCells)) {
         console.log("Revealed cells:", result.revealedCells);
         result.revealedCells.forEach(cellUpdate => {
@@ -63,15 +71,17 @@ function updateBoard(result) {
     } else {
         updateSingleCell(result);
     }
+
+    // Kalla disableBoard() vid vinst
     if (result.win) {
         const div = document.getElementById("resultDiv");
         div.innerText = "You won!";
+        disableBoard(); // Inaktivera spelplanen
         setTimeout(function () {
             resetGame();
-        }, 5000)
+        }, 5000);
     }
 }
-
 
 function updateSingleCell(cellUpdate) {
     const cell = gameBoard.children[cellUpdate.cellIndex];
@@ -85,10 +95,11 @@ function updateSingleCell(cellUpdate) {
         cell.classList.add('mine');
         cell.innerText = '💣';
         const div = document.getElementById("resultDiv");
-        div.innerText = "You lost!"
+        div.innerText = "You lost!";
+        disableBoard(); // Inaktivera spelplanen
         setTimeout(function () {
             resetGame();
-        }, 5000)
+        }, 5000);
     } else {
         if (cellUpdate.adjacentMines > 0) {
             cell.innerText = cellUpdate.adjacentMines;
@@ -127,4 +138,3 @@ function createBoard() {
         gameBoard.appendChild(cell);
     }
 }
-
