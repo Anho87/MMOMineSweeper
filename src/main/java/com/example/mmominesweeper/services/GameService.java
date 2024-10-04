@@ -16,7 +16,7 @@ public class GameService {
     private boolean[][] mines; 
     private boolean[][] revealed; 
     private List<Mine> mineList; 
-    private final int numberOfMines = (int) (boardSize * Math.sqrt(boardSize * 2));
+    private final int numberOfMines = (int) (boardSize * Math.sqrt(boardSize));
 
     public void initializeGame() {
         System.out.println(numberOfMines);
@@ -84,7 +84,7 @@ public class GameService {
     public List<GameUpdate> revealAdjacentCells(int startX, int startY) {
         List<GameUpdate> revealedCellsUpdates = new ArrayList<>();
         Queue<int[]> queue = new LinkedList<>();
-        final int MAX_REVEAL_LIMIT = boardSize * boardSize;  // Max antal celler att avslöja
+        final int MAX_REVEAL_LIMIT = boardSize * boardSize;
         int revealCount = 0;
 
         queue.add(new int[]{startX, startY});
@@ -100,11 +100,11 @@ public class GameService {
             int y = current[1];
 
             if (revealed[x][y]) {
-                continue;  // Hoppa över celler som redan avslöjats
+                continue;  
             }
 
             revealCell(x, y);
-            revealCount++;  // Öka avslöjarens räknare
+            revealCount++;  
             int cellIndex = x + (y * boardSize);
             int adjacentMines = countAdjacentMines(x, y);
             revealedCellsUpdates.add(new GameUpdate(cellIndex, false, adjacentMines, false, false));

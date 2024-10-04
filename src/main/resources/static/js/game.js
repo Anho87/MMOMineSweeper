@@ -37,12 +37,12 @@ stompClient.connect({}, function (frame) {
     console.error('WebSocket connection error:', error);
 });
 
-// Ny funktion för att inaktivera spelplanen
+
 function disableBoard() {
     const cells = document.querySelectorAll(".cell");
     cells.forEach(cell => {
-        cell.removeEventListener("click", handleCellClick); // Ta bort event
-        cell.classList.add("disabled"); // Lägg till klass för inaktivering
+        cell.removeEventListener("click", handleCellClick); 
+        cell.classList.add("disabled"); 
     });
 }
 
@@ -72,11 +72,11 @@ function updateBoard(result) {
         updateSingleCell(result);
     }
 
-    // Kalla disableBoard() vid vinst
+  
     if (result.win) {
         const div = document.getElementById("resultDiv");
         div.innerText = "You won!";
-        disableBoard(); // Inaktivera spelplanen
+        disableBoard(); 
         setTimeout(function () {
             resetGame();
         }, 5000);
@@ -96,7 +96,7 @@ function updateSingleCell(cellUpdate) {
         cell.innerText = '💣';
         const div = document.getElementById("resultDiv");
         div.innerText = "You lost!";
-        disableBoard(); // Inaktivera spelplanen
+        disableBoard(); 
         setTimeout(function () {
             resetGame();
         }, 5000);
