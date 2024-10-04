@@ -28,10 +28,15 @@ public class GameController {
     @PostMapping("/reset")
     public String resetGame() {
         gameService.resetGame();
-        messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(-1, false, 0, false, true));
+        System.out.println("Game Reset");
         return "index";
     }
-
+    @MessageMapping("/connect")
+    public void sendCurrentGameState() {
+        List<GameUpdate> currentGameState = gameService.getCurrentGameState();
+        System.out.println("Sending gamestate to new connection");
+        messagingTemplate.convertAndSend("/topic/new-game-state", currentGameState);
+    }
     @MessageMapping("/move")
     public void handlePlayerMove(PlayerMove move) {
         int x = move.getX();

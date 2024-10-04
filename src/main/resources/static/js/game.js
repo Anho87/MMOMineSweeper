@@ -17,6 +17,19 @@ function sendMove(x, y) {
 
 stompClient.connect({}, function (frame) {
     console.log("Connected: " + frame);
+
+    
+    stompClient.send("/app/connect", {}, {});
+    
+    const newGameStateSubscription = stompClient.subscribe('/topic/new-game-state', function (message) {
+        const result = JSON.parse(message.body);
+        console.log("Received current game state:", result);
+        resetClientBoard();
+        createBoard();
+        renderBoardState(result);
+        newGameStateSubscription.unsubscribe();
+    });
+
     stompClient.subscribe('/topic/game-updates', function (message) {
         const result = JSON.parse(message.body);
         console.log("Game update:", result);
@@ -26,13 +39,21 @@ stompClient.connect({}, function (frame) {
     console.error('WebSocket connection error:', error);
 });
 
+function renderBoardState(currentGameState) {
+    currentGameState.forEach(cellUpdate => {
+        updateSingleCell(cellUpdate);
+    });
+}
+function resetClientBoard() {
+    while (gameBoard.firstChild) {
+        gameBoard.removeChild(gameBoard.firstChild);
+    }
+    const div = document.getElementById("resultDiv");
+    div.innerText = "";
+}
 
 function updateBoard(result) {
     console.log("Updating board with result:", result);
-    
-    if(result.resetGame){
-        return;
-    }
     
     if (Array.isArray(result.revealedCells)) {
         console.log("Revealed cells:", result.revealedCells);
@@ -50,6 +71,7 @@ function updateBoard(result) {
         }, 5000)
     }
 }
+
 
 function updateSingleCell(cellUpdate) {
     const cell = gameBoard.children[cellUpdate.cellIndex];
@@ -79,7 +101,7 @@ function resetGame() {
     while (gameBoard.firstChild) {
         gameBoard.removeChild(gameBoard.firstChild);
     }
-   
+
     const div = document.getElementById("resultDiv");
     div.innerText = "";
     fetch("/reset", {
@@ -87,7 +109,7 @@ function resetGame() {
     })
         .then(response => {
             if (response.ok) {
-                console.log("Spelet har återställts på servern.");
+                console.log("Game has been reset by server.");
                 createBoard();
             }
         })

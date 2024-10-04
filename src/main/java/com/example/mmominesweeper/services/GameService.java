@@ -16,7 +16,7 @@ public class GameService {
     private boolean[][] mines; 
     private boolean[][] revealed; 
     private List<Mine> mineList; 
-    private final int numberOfMines = 10;
+    private final int numberOfMines = 20;
 
     public void initializeGame() {
         mines = new boolean[boardSize][boardSize];
@@ -34,7 +34,19 @@ public class GameService {
             }
         }
     }
-
+    public List<GameUpdate> getCurrentGameState() {
+        List<GameUpdate> currentGameState = new ArrayList<>();
+        for (int x = 0; x < boardSize; x++) {
+            for (int y = 0; y < boardSize; y++) {
+                if (revealed[x][y]) {
+                    int adjacentMines = countAdjacentMines(x, y);
+                    int cellIndex = x + (y * boardSize);
+                    currentGameState.add(new GameUpdate(cellIndex, mines[x][y], adjacentMines, false, true));
+                }
+            }
+        }
+        return currentGameState;
+    }
     public void resetGame() {
         mines = new boolean[boardSize][boardSize];
         revealed = new boolean[boardSize][boardSize];

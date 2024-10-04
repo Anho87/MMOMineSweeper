@@ -10,15 +10,15 @@ public class GameUpdate {
     private int cellIndex; 
     private final boolean mine; 
     private final int adjacentMines; 
-    private final boolean win; 
-    private final boolean resetGame;
+    private final boolean win;
+    private final boolean gameState;
 
-    public GameUpdate(int cellIndex, boolean mine,int adjacentMines, boolean win, boolean resetGame) {
+    public GameUpdate(int cellIndex, boolean mine,int adjacentMines, boolean win,  boolean gameState) {
         this.cellIndex = cellIndex;
         this.mine = mine;
         this.adjacentMines = adjacentMines;
         this.win = win;
-        this.resetGame = resetGame;
+        this.gameState = gameState;
     }
 }
 
