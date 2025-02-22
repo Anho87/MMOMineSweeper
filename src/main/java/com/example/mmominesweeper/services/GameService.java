@@ -1,7 +1,7 @@
 package com.example.mmominesweeper.services;
 
-import com.example.mmominesweeper.models.GameUpdate;
-import com.example.mmominesweeper.models.Mine;
+import com.example.mmominesweeper.game.GameUpdate;
+import com.example.mmominesweeper.game.Mine;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
@@ -91,7 +91,6 @@ public class GameService {
 
         while (!queue.isEmpty()) {
             if (revealCount >= MAX_REVEAL_LIMIT) {
-                System.out.println("Max antal celler avslöjade, stoppar ytterligare avslöjande.");
                 break;
             }
 

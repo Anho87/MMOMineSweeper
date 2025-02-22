@@ -1,8 +1,8 @@
 package com.example.mmominesweeper.controllers;
 
-import com.example.mmominesweeper.models.GameUpdate;
-import com.example.mmominesweeper.models.PlayerMove;
-import com.example.mmominesweeper.models.RevealedCellsUpdate;
+import com.example.mmominesweeper.game.GameUpdate;
+import com.example.mmominesweeper.game.PlayerMove;
+import com.example.mmominesweeper.game.RevealedCellsUpdate;
 import com.example.mmominesweeper.services.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;

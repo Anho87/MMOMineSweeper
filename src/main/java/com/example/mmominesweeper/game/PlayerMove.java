@@ -1,4 +1,4 @@
-package com.example.mmominesweeper.models;
+package com.example.mmominesweeper.game;
 
 import lombok.Getter;
 import lombok.Setter;
