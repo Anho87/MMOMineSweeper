@@ -1,9 +1,15 @@
 
 #game-board {
     display: grid;
-    grid-template-columns: repeat(100, 40px); 
-    grid-template-rows: repeat(100, 40px); 
-    gap: 2px; 
+    grid-template-columns: repeat(50, 40px); 
+    grid-template-rows: repeat(50, 40px); 
+    gap: 2px;
+    margin: 30px auto; /* Auto centers horizontally */
+    width: fit-content;
+}
+
+#title{
+    text-align: center;
 }
 
 .cell {

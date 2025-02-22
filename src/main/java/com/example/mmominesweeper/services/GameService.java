@@ -12,14 +12,14 @@ import java.util.*;
 @Getter
 @Setter
 public class GameService {
-    private final int boardSize = 100;
+    private final int boardSize = 50;
     private boolean[][] mines; 
     private boolean[][] revealed; 
-    private List<Mine> mineList; 
-    private final int numberOfMines = (int) (boardSize * Math.sqrt(boardSize));
+    private List<Mine> mineList;
+    private final int numberOfMines = (int) (boardSize * Math.sqrt(boardSize) * 0.70);
 
     public void initializeGame() {
-        System.out.println(numberOfMines);
+        System.out.println("Number of mines " + numberOfMines);
         mines = new boolean[boardSize][boardSize];
         revealed = new boolean[boardSize][boardSize];
         mineList = new ArrayList<>();

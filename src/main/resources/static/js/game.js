@@ -1,4 +1,4 @@
-const boardSize = 100;
+const boardSize = 50;
 const socket = new SockJS('/game');
 const stompClient = Stomp.over(socket);
 const gameBoard = document.getElementById("game-board");
