@@ -17,12 +17,16 @@ public class GameService {
     private boolean[][] revealed; 
     private List<Mine> mineList;
     private final int numberOfMines = (int) (boardSize * Math.sqrt(boardSize) * 0.70);
+    private final int startingLife = 10;
+    private int life = 0;
+//    private final int numberOfMines = 1;
 
     public void initializeGame() {
         System.out.println("Number of mines " + numberOfMines);
         mines = new boolean[boardSize][boardSize];
         revealed = new boolean[boardSize][boardSize];
         mineList = new ArrayList<>();
+        life = startingLife;
         
         Random rand = new Random();
 
@@ -51,12 +55,27 @@ public class GameService {
     public void resetGame() {
         mines = new boolean[boardSize][boardSize];
         revealed = new boolean[boardSize][boardSize];
+        life = startingLife;
         mineList.clear(); 
         initializeGame(); 
     }
 
     public boolean isMineAt(int x, int y) {
         return mines[x][y];
+    }
+    
+    public boolean isLifeZero(){
+        System.out.println(life);
+        return life == 0;
+    }
+    
+    public void adjustLife(String operation){
+        operation = operation.trim();
+        if (operation.equals("+")) {
+            life++;
+        } else if (operation.equals("-")) {
+            life--;
+        }
     }
 
     public void revealCell(int x, int y) {

@@ -46,8 +46,14 @@ public class GameController {
         System.out.println("Player moved: (" + x + ", " + y + ") Cell index: " + cellIndex);
         
         if (gameService.isMineAt(x, y)) {
-            System.out.println("Mine hit at: (" + x + ", " + y + ")");
-            messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(cellIndex, true, 0, false,false));
+            gameService.adjustLife("-");
+            if(gameService.isLifeZero()){
+                System.out.println("Mine hit at: (" + x + ", " + y + ")");
+                messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(cellIndex, true, 0, false,false));
+            }else{
+                System.out.println("Mine hit at: (" + x + ", " + y + ")");
+                messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(cellIndex, true, 0, false,true));
+            }
         } else {
          
             List<GameUpdate> revealedCellsUpdates = gameService.revealAdjacentCells(x, y);

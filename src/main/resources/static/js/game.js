@@ -1,7 +1,10 @@
 const boardSize = 50;
+let life  = 10;
 const socket = new SockJS('/game');
 const stompClient = Stomp.over(socket);
 const gameBoard = document.getElementById("game-board");
+const lifeDiv = document.getElementById("life");
+const resultDiv = document.getElementById("resultDiv");
 
 function handleCellClick(event) {
     const cell = event.target;
@@ -56,8 +59,7 @@ function resetClientBoard() {
     while (gameBoard.firstChild) {
         gameBoard.removeChild(gameBoard.firstChild);
     }
-    const div = document.getElementById("resultDiv");
-    div.innerText = "";
+    resultDiv.innerText = "";
 }
 
 function updateBoard(result) {
@@ -74,8 +76,7 @@ function updateBoard(result) {
 
   
     if (result.win) {
-        const div = document.getElementById("resultDiv");
-        div.innerText = "You won!";
+        resultDiv.innerText = "You won!";
         disableBoard(); 
         setTimeout(function () {
             resetGame();
@@ -85,7 +86,6 @@ function updateBoard(result) {
 
 function updateSingleCell(cellUpdate) {
     const cell = gameBoard.children[cellUpdate.cellIndex];
-
     if (!cell) {
         console.error(`Invalid cell index: ${cellUpdate.cellIndex}`);
         return;
@@ -94,12 +94,16 @@ function updateSingleCell(cellUpdate) {
     if (cellUpdate.mine) {
         cell.classList.add('mine');
         cell.innerText = '💣';
-        const div = document.getElementById("resultDiv");
-        div.innerText = "You lost!";
-        disableBoard(); 
-        setTimeout(function () {
-            resetGame();
-        }, 5000);
+        life--;
+        console.log(life)
+        lifeDiv.innerText = life;
+        if (!cellUpdate.gameState){
+            resultDiv.innerText = "You lost!";
+            disableBoard();
+            setTimeout(function () {
+                resetGame();
+            }, 5000);
+        }
     } else {
         if (cellUpdate.adjacentMines > 0) {
             cell.innerText = cellUpdate.adjacentMines;
@@ -109,12 +113,12 @@ function updateSingleCell(cellUpdate) {
 }
 
 function resetGame() {
+    life = 10;
+    lifeDiv.innerText = life;
     while (gameBoard.firstChild) {
         gameBoard.removeChild(gameBoard.firstChild);
     }
-
-    const div = document.getElementById("resultDiv");
-    div.innerText = "";
+    resultDiv.innerText = "";
     fetch("/reset", {
         method: "POST"
     })
@@ -130,6 +134,7 @@ function resetGame() {
 createBoard();
 
 function createBoard() {
+    lifeDiv.innerText = life;
     for (let i = 0; i < boardSize * boardSize; i++) {
         const cell = document.createElement("div");
         cell.className = "cell";
