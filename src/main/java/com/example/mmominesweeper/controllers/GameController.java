@@ -49,10 +49,10 @@ public class GameController {
             gameService.adjustLife("-");
             if(gameService.isLifeZero()){
                 System.out.println("Mine hit at: (" + x + ", " + y + ")");
-                messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(cellIndex, true, 0, false,false));
+                messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(cellIndex, true, 0, false,false, gameService.getLife()));
             }else{
                 System.out.println("Mine hit at: (" + x + ", " + y + ")");
-                messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(cellIndex, true, 0, false,true));
+                messagingTemplate.convertAndSend("/topic/game-updates", new GameUpdate(cellIndex, true, 0, false,true, gameService.getLife()));
             }
         } else {
          

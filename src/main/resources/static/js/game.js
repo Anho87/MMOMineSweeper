@@ -1,5 +1,4 @@
 const boardSize = 50;
-let life  = 10;
 const socket = new SockJS('/game');
 const stompClient = Stomp.over(socket);
 const gameBoard = document.getElementById("game-board");
@@ -90,13 +89,12 @@ function updateSingleCell(cellUpdate) {
         console.error(`Invalid cell index: ${cellUpdate.cellIndex}`);
         return;
     }
-
+    cell.removeEventListener("click", handleCellClick);
+    cell.classList.add("disabled");
     if (cellUpdate.mine) {
         cell.classList.add('mine');
         cell.innerText = '💣';
-        life--;
-        console.log(life)
-        lifeDiv.innerText = life;
+        lifeDiv.innerText = cellUpdate.life;
         if (!cellUpdate.gameState){
             resultDiv.innerText = "You lost!";
             disableBoard();
@@ -113,8 +111,7 @@ function updateSingleCell(cellUpdate) {
 }
 
 function resetGame() {
-    life = 10;
-    lifeDiv.innerText = life;
+    lifeDiv.innerText = "10";
     while (gameBoard.firstChild) {
         gameBoard.removeChild(gameBoard.firstChild);
     }
@@ -128,13 +125,12 @@ function resetGame() {
                 createBoard();
             }
         })
-        .catch(error => console.error("Fel vid återställning av spelet:", error));
+        .catch(error => console.error("Error occurred when reseting:", error));
 }
 
 createBoard();
 
 function createBoard() {
-    lifeDiv.innerText = life;
     for (let i = 0; i < boardSize * boardSize; i++) {
         const cell = document.createElement("div");
         cell.className = "cell";

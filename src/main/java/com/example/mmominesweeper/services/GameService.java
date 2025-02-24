@@ -14,7 +14,8 @@ import java.util.*;
 public class GameService {
     private final int boardSize = 50;
     private boolean[][] mines; 
-    private boolean[][] revealed; 
+    private boolean[][] revealed;
+    private List<Mine> revealedMines;
     private List<Mine> mineList;
     private final int numberOfMines = (int) (boardSize * Math.sqrt(boardSize) * 0.70);
     private final int startingLife = 10;
@@ -26,6 +27,7 @@ public class GameService {
         mines = new boolean[boardSize][boardSize];
         revealed = new boolean[boardSize][boardSize];
         mineList = new ArrayList<>();
+        revealedMines = new ArrayList<>();
         life = startingLife;
         
         Random rand = new Random();
@@ -46,21 +48,37 @@ public class GameService {
                 if (revealed[x][y]) {
                     int adjacentMines = countAdjacentMines(x, y);
                     int cellIndex = x + (y * boardSize);
-                    currentGameState.add(new GameUpdate(cellIndex, mines[x][y], adjacentMines, false, true));
+                    currentGameState.add(new GameUpdate(cellIndex, mines[x][y], adjacentMines, false, true, this.life));
                 }
             }
+        }
+        for (Mine mine : revealedMines) {
+            int x = mine.getX();
+            int y = mine.getY();
+            int cellIndex = x + (y * boardSize);
+            int adjacentMines = countAdjacentMines(x, y);
+
+            currentGameState.add(new GameUpdate(cellIndex, mines[x][y], adjacentMines, false, true, this.life));
         }
         return currentGameState;
     }
     public void resetGame() {
+        try{
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
         mines = new boolean[boardSize][boardSize];
         revealed = new boolean[boardSize][boardSize];
         life = startingLife;
-        mineList.clear(); 
-        initializeGame(); 
+        mineList.clear();
+        initializeGame();
     }
 
     public boolean isMineAt(int x, int y) {
+        if(mines[x][y]){
+            revealedMines.add(new Mine(x,y));
+        }
         return mines[x][y];
     }
     
@@ -125,7 +143,7 @@ public class GameService {
             revealCount++;  
             int cellIndex = x + (y * boardSize);
             int adjacentMines = countAdjacentMines(x, y);
-            revealedCellsUpdates.add(new GameUpdate(cellIndex, false, adjacentMines, false, false));
+            revealedCellsUpdates.add(new GameUpdate(cellIndex, false, adjacentMines, false, false, life));
 
             if (adjacentMines == 0) {
                 for (int dx = -1; dx <= 1; dx++) {
